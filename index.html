@@ -15,14 +15,7 @@
       gtag('js', new Date());
       gtag('config', 'G-XXXXXXXXXX');
     </script>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1H1XHNQJF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-Q1H1XHNQJF');
-</script>
+    
     <style>
         /* --- ESTILOS GENERALES Y DE NAVEGACIÓN --- */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
@@ -33,89 +26,137 @@
         .back-button:hover { background-color: #5a6268; }
 
         /* --- ESTILOS ORIGINALES DE yoymisfinanzas.html --- */
-        #capacitacionView { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; line-height: 1.7; color: #333; }
-        #capacitacionView .slide { width: 95%; max-width: 950px; margin: 25px 0; padding: 40px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); text-align: center; }
+        #capacitacionView { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; line-height: 1.6; color: #333; }
+        #capacitacionView .slide { width: 95%; max-width: 950px; margin: 20px 0; padding: 25px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); text-align: center; }
         #capacitacionView .module-1-header { border-top: 8px solid #f39c12; }
         #capacitacionView .module-2-header { border-top: 8px solid #c0392b; }
-        #capacitacionView .module-title { color: white; padding: 25px; border-radius: 12px; margin-bottom: 30px; }
+        #capacitacionView .module-title { color: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; }
         #capacitacionView .module-title-1 { background-color: #f39c12; }
         #capacitacionView .module-title-2 { background-color: #c0392b; }
-        #capacitacionView .module-title h1 { color: white; margin: 0; }
+        #capacitacionView .module-title h1 { color: white; margin: 0; font-size: 1.8em; }
         #capacitacionView .module-title p { margin: 10px 0 0; opacity: 0.9; }
-        #capacitacionView h2 { color: #34495e; font-weight: 700; margin-top: 40px; }
-        #capacitacionView h3 { color: #34495e; border-bottom: 3px solid #f1c40f; padding-bottom: 8px; display: inline-block; margin-top: 30px; }
-        #capacitacionView .concept-box { text-align: left; margin: 20px auto; padding: 25px; background-color: #fdfefe; border-left: 6px solid; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-        #capacitacionView .quiz-section { background-color: #e6f7ff; border: 2px dashed #007bff; padding: 30px; border-radius: 10px; margin: 40px 0; text-align: left; }
-        #capacitacionView .quiz-question { margin-bottom: 25px; }
+        #capacitacionView h2 { color: #34495e; font-weight: 700; margin-top: 30px; font-size: 1.6em; }
+        #capacitacionView h3 { color: #34495e; border-bottom: 3px solid #f1c40f; padding-bottom: 8px; display: inline-block; margin-top: 25px; font-size: 1.3em; }
+        #capacitacionView .concept-box { text-align: left; margin: 20px auto; padding: 20px; background-color: #fdfefe; border-left: 6px solid; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+        #capacitacionView .quiz-section { background-color: #e6f7ff; border: 2px dashed #007bff; padding: 20px; border-radius: 10px; margin: 30px 0; text-align: left; }
+        #capacitacionView .quiz-question { margin-bottom: 20px; }
         #capacitacionView .quiz-question p { font-weight: bold; margin-bottom: 10px; }
-        #capacitacionView .quiz-question label { display: block; margin-left: 5px; margin-bottom: 5px; cursor: pointer; }
+        #capacitacionView .quiz-question label { display: block; margin-left: 5px; margin-bottom: 8px; cursor: pointer; }
         #capacitacionView .quiz-feedback { font-weight: bold; margin-left: 10px; font-size: 0.9em; }
         #capacitacionView .feedback-correct { color: #28a745; }
         #capacitacionView .feedback-incorrect { color: #dc3545; }
-        #capacitacionView .tool-section { margin-top: 40px; padding: 30px; background-color: #f4f6f7; border-radius: 10px; }
-        #capacitacionView table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.95em; }
-        #capacitacionView th, #capacitacionView td { border: 1px solid #bdc3c7; padding: 12px; text-align: left; }
+        #capacitacionView .tool-section { margin-top: 30px; padding: 20px; background-color: #f4f6f7; border-radius: 10px; overflow-x: auto; /* Permite scroll horizontal en tablas */ }
+        #capacitacionView table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.9em; }
+        #capacitacionView th, #capacitacionView td { border: 1px solid #bdc3c7; padding: 10px; text-align: left; white-space: nowrap; /* Evita que el texto se parta en varias líneas */ }
         #capacitacionView th { background-color: #34495e; color: white; }
-        #capacitacionView td input[type="text"], #capacitacionView td input[type="number"] { width: 90%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;}
+        #capacitacionView td input[type="text"], #capacitacionView td input[type="number"] { width: 120px; /* Ancho fijo para inputs */ padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;}
         #capacitacionView tfoot tr { font-weight: bold; background-color: #ecf0f1; }
         #capacitacionView .transition-slide { background-color: #34495e; color: white; border-top: 8px solid #f1c40f; }
         #capacitacionView .transition-slide h2 { color: white; }
         #capacitacionView .action-icon {cursor:pointer; font-size:1.4em; margin:0 5px; text-decoration:none; display:inline-block; vertical-align: middle;}
         #capacitacionView .action-icon:hover {opacity:0.7;}
-        #capacitacionView .tool-section button { background-color: #3498db; color: #fff; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 1em; margin-top: 15px; margin-right: 10px; }
+        #capacitacionView .tool-section button { background-color: #3498db; color: #fff; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em; margin-top: 15px; margin-right: 10px; }
         #capacitacionView .tool-section button:hover { background-color: #2980b9; }
         #capacitacionView .tool-section button.add-row-button { background-color: #28a745; }
         #capacitacionView .tool-section button.add-row-button:hover { background-color: #218838; }
 
         /* --- ESTILOS ORIGINALES DE Registro mi hogar y mi negocio.html --- */
-        #hogarView { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 25px; color: #333; }
-        #hogarView .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-        #hogarView header { text-align: center; margin-bottom: 30px; border-bottom: 4px solid #f39c12; padding-bottom: 20px; }
-        #hogarView header h1 { color: #f39c12; margin: 0; }
-        #hogarView header p { font-size: 1.1em; color: #555; margin-bottom: 20px;}
-        #hogarView #export-btn { background-color: #218838; color: white; padding: 12px 25px; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; font-weight: bold; }
-        #hogarView #export-btn:hover { background-color: #1e7e34; }
-        #hogarView .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
-        #hogarView .category-card { background-color: #fdfdfd; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
-        #hogarView .category-card h2 { margin-top: 0; font-size: 1.3em; color: #34495e; border-bottom: 2px solid #eeeeee; padding-bottom: 10px; margin-bottom: 15px; }
+        #hogarView { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 15px; color: #333; }
+        #hogarView .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        #hogarView header { text-align: center; margin-bottom: 25px; border-bottom: 4px solid #f39c12; padding-bottom: 15px; }
+        #hogarView header h1 { color: #f39c12; margin: 0; font-size: 1.8em; }
+        #hogarView header p { font-size: 1em; color: #555; margin-bottom: 15px;}
+        #hogarView #export-btn { background-color: #218838; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: bold; }
+        #hogarView .grid-container { display: grid; grid-template-columns: 1fr; /* Apilado en una columna por defecto para móvil */ gap: 20px; }
+        #hogarView .category-card { background-color: #fdfdfd; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow-x: auto; }
+        #hogarView .category-card h2 { margin-top: 0; font-size: 1.2em; color: #34495e; border-bottom: 2px solid #eeeeee; padding-bottom: 10px; margin-bottom: 15px; }
         #hogarView #ingresos-card h2 { color: #27ae60; }
         #hogarView table { width: 100%; border-collapse: collapse; flex-grow: 1; }
-        #hogarView th, #hogarView td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
-        #hogarView th { font-size: 0.9em; color: #7f8c8d; }
-        #hogarView td input { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        #hogarView th, #hogarView td { padding: 8px; text-align: left; border-bottom: 1px solid #eee; white-space: nowrap; }
+        #hogarView th { font-size: 0.85em; color: #7f8c8d; }
+        #hogarView td input { width: 100px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
         #hogarView tfoot { font-weight: bold; color: #34495e; }
         #hogarView .add-row-btn { background-color: #7f8c8d; color: white; border: none; padding: 6px 10px; border-radius: 5px; cursor: pointer; margin-top: 15px; align-self: flex-start; font-size: 0.8em; }
-        #hogarView .add-row-btn:hover { background-color: #34495e; }
-        #hogarView .summary-card { margin-top: 40px; padding: 25px; background-color: #eafaf1; border: 2px solid #28a745; border-radius: 10px; text-align: center; }
-        #hogarView .summary-card h2 { color: #28a745; }
-        #hogarView .summary-item { margin: 15px 0; font-size: 1.2em; }
-        #hogarView #final-balance { font-size: 1.5em; font-weight: bold; }
+        #hogarView .summary-card { margin-top: 30px; padding: 20px; background-color: #eafaf1; border: 2px solid #28a745; border-radius: 10px; text-align: center; }
+        #hogarView .summary-card h2 { color: #28a745; font-size: 1.4em; }
+        #hogarView .summary-item { margin: 15px 0; font-size: 1.1em; }
+        #hogarView #final-balance { font-size: 1.3em; font-weight: bold; }
 
         /* --- ESTILOS ORIGINALES DE registroyo ymi negocio.html --- */
-        #negocioView { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 25px; color: #333; }
-        #negocioView .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-        #negocioView header { text-align: center; margin-bottom: 30px; border-bottom: 4px solid #c0392b; padding-bottom: 20px; }
-        #negocioView header h1 { color: #c0392b; margin: 0; }
-        #negocioView #export-btn { background-color: #218838; color: white; padding: 12px 25px; border: none; border-radius: 8px; font-size: 1.1em; cursor: pointer; font-weight: bold; margin-top: 20px; }
-        #negocioView #export-btn:hover { background-color: #1e7e34; }
-        #negocioView .grid-container { display: grid; grid-template-columns: 1fr; gap: 30px; }
-        #negocioView .section-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; }
-        #negocioView .section-card h2 { margin-top: 0; padding-bottom: 10px; border-bottom: 2px solid; }
+        #negocioView { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 15px; color: #333; }
+        #negocioView .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+        #negocioView header { text-align: center; margin-bottom: 25px; border-bottom: 4px solid #c0392b; padding-bottom: 15px; }
+        #negocioView header h1 { color: #c0392b; margin: 0; font-size: 1.8em; }
+        #negocioView #export-btn { background-color: #218838; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-size: 1em; cursor: pointer; font-weight: bold; margin-top: 15px; }
+        #negocioView .grid-container { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        #negocioView .section-card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; overflow-x: auto; }
+        #negocioView .section-card h2 { margin-top: 0; padding-bottom: 10px; border-bottom: 2px solid; font-size: 1.2em; }
         #negocioView #ingresos h2 { color: #27ae60; border-color: #27ae60; }
         #negocioView #costos h2 { color: #f39c12; border-color: #f39c12; }
         #negocioView #gastos h2 { color: #8e44ad; border-color: #8e44ad; }
         #negocioView table { width: 100%; border-collapse: collapse; }
-        #negocioView th, #negocioView td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
-        #negocioView th { font-size: 0.9em; color: #7f8c8d; }
-        #negocioView td input { width: 95%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
-        #negocioView tfoot { font-weight: bold; font-size: 1.1em; }
+        #negocioView th, #negocioView td { padding: 8px; text-align: left; border-bottom: 1px solid #eee; white-space: nowrap; }
+        #negocioView th { font-size: 0.85em; color: #7f8c8d; }
+        #negocioView td input { width: 80px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        #negocioView tfoot { font-weight: bold; font-size: 1em; }
         #negocioView .add-row-btn { background-color: #3498db; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
-        #negocioView .summary-card { margin-top: 30px; padding: 25px; background-color: #ecf0f1; border-top: 5px solid #34495e; border-radius: 10px; }
-        #negocioView .summary-card h2 { text-align: center; color: #34495e; }
-        #negocioView .summary-item { display: flex; justify-content: space-between; padding: 15px; font-size: 1.2em; border-bottom: 1px solid #bdc3c7; }
+        #negocioView .summary-card { margin-top: 30px; padding: 20px; background-color: #ecf0f1; border-top: 5px solid #34495e; border-radius: 10px; }
+        #negocioView .summary-card h2 { text-align: center; color: #34495e; font-size: 1.4em; }
+        #negocioView .summary-item { display: flex; justify-content: space-between; padding: 12px; font-size: 1.1em; border-bottom: 1px solid #bdc3c7; flex-wrap: wrap; }
         #negocioView .summary-item:last-child { border-bottom: none; }
         #negocioView .summary-item span:last-child { font-weight: bold; }
-        #negocioView #resultado-final { font-size: 1.5em; }
+        #negocioView #resultado-final { font-size: 1.3em; }
+
+        /* ============================================= */
+        /* --- MEDIA QUERIES PARA DISEÑO ADAPTABLE --- */
+        /* ============================================= */
+        
+        /* Para pantallas de hasta 768px (tablets y móviles grandes) */
+        @media (min-width: 768px) {
+            /* Devolver el layout de grid a las tarjetas del presupuesto del hogar */
+            #hogarView .grid-container {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            }
+        }
+        
+        /* Para pantallas más pequeñas de 600px (móviles) */
+        @media (max-width: 600px) {
+            body {
+                padding: 0;
+            }
+            .main-button, .back-button {
+                width: 90%;
+                box-sizing: border-box;
+                padding: 15px;
+                font-size: 1em;
+                margin-left: 5%;
+                margin-right: 5%;
+            }
+            #capacitacionView {
+                padding: 5px;
+            }
+            #capacitacionView .slide,
+            #hogarView .container,
+            #negocioView .container {
+                padding: 15px;
+                width: auto;
+            }
+            #capacitacionView .module-title h1,
+            #hogarView header h1,
+            #negocioView header h1 {
+                font-size: 1.5em;
+            }
+             #capacitacionView h2,
+             #hogarView .summary-card h2,
+             #negocioView .summary-card h2 {
+                font-size: 1.3em;
+             }
+             #capacitacionView h3,
+             #hogarView .category-card h2,
+             #negocioView .section-card h2 {
+                 font-size: 1.1em;
+             }
+        }
     </style>
 </head>
 <body>
