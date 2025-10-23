@@ -179,11 +179,16 @@
         document.getElementById(viewId).style.display = 'block';
         window.scrollTo(0, 0);
     }
-    document.addEventListener('DOMContentLoaded', () => { showView('capacitacionView'); });
+    document.addEventListener('DOMContentLoaded', () => { 
+        showView('capacitacionView'); 
+        // Inicializar los scripts de las otras vistas para que sus listeners estén listos
+        initHogarScript();
+        initNegocioScript();
+    });
 
-// ===================================================================
-// SCRIPT CORREGIDO PARA yoymisfinanzas.html (AISLADO Y FUNCIONAL)
-// ===================================================================
+    // ===================================================================
+    // SCRIPT ORIGINAL DE yoymisfinanzas.html (AISLADO)
+    // ===================================================================
     (() => {
         const view = document.getElementById('capacitacionView');
         const formatCurrency = (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
@@ -208,23 +213,21 @@
     // ===================================================================
     // SCRIPT ORIGINAL DE Registro mi hogar y mi negocio.html (AISLADO)
     // ===================================================================
-    (() => {
+    function initHogarScript() {
         const view = document.getElementById('hogarView');
-        if (!view) return;
         const formatCurrency = (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
         function calculateAllTotals() { let totalIngresos = 0; view.querySelectorAll('#ingresos-card .monto-input').forEach(input => { totalIngresos += parseFloat(input.value) || 0; }); view.querySelector('#ingresos-card .subtotal').textContent = formatCurrency(totalIngresos); let granTotalEgresos = 0; view.querySelectorAll('.expense-card').forEach(card => { let subtotal = 0; card.querySelectorAll('.monto-input').forEach(input => { subtotal += parseFloat(input.value) || 0; }); card.querySelector('.subtotal').textContent = formatCurrency(subtotal); granTotalEgresos += subtotal; }); const balance = totalIngresos - granTotalEgresos; view.querySelector('#summary-ingresos').textContent = formatCurrency(totalIngresos); view.querySelector('#summary-egresos').textContent = formatCurrency(granTotalEgresos); const balanceElement = view.querySelector('#final-balance'); balanceElement.textContent = formatCurrency(balance); balanceElement.style.color = balance < 0 ? '#e74c3c' : '#2ecc71'; balanceElement.textContent += balance < 0 ? ' (Faltante)' : ' (Excedente)'; }
         view.addEventListener('input', function(event) { if (event.target.classList.contains('monto-input')) { calculateAllTotals(); } });
         view.addEventListener('click', function(event) { if (event.target.classList.contains('add-row-btn')) { const button = event.target; const card = button.closest('.category-card'); const tableBody = card.querySelector('tbody'); const isIncome = card.id === 'ingresos-card'; const newRow = tableBody.insertRow(); if (isIncome) { newRow.innerHTML = `<td><input type="text" placeholder="Otro Ingreso"></td><td><input class="monto-input" type="number" placeholder="0"></td>`; } else { newRow.innerHTML = `<td><input type="text"></td><td><input type="text"></td><td><input class="monto-input" type="number" placeholder="0"></td>`; } } });
         view.querySelector('#export-btn').addEventListener('click', function() { try { const wb = XLSX.utils.book_new(); let totalIngresos = 0; view.querySelectorAll('#ingresos-card .monto-input').forEach(input => { const valor = parseFloat(input.value); if (!isNaN(valor)) totalIngresos += valor; }); let granTotalEgresos = 0; view.querySelectorAll('.expense-card .monto-input').forEach(input => { const valor = parseFloat(input.value); if (!isNaN(valor)) granTotalEgresos += valor; }); const balanceFinal = totalIngresos - granTotalEgresos; const resumenData = [ ["Concepto", "Monto"], ["Total Ingresos del Mes", totalIngresos], ["Gran Total de Egresos", granTotalEgresos], ["Resultado del Mes", balanceFinal] ]; const wsResumen = XLSX.utils.aoa_to_sheet(resumenData); XLSX.utils.book_append_sheet(wb, wsResumen, "Resumen Financiero"); const ingresosData = [["Concepto", "Monto"]]; const ingresosRows = view.querySelectorAll('#ingresos-table tbody tr'); ingresosRows.forEach(row => { const inputs = row.querySelectorAll('input'); if (inputs.length >= 2) { const concepto = inputs[0].value || ""; const monto = parseFloat(inputs[1].value) || 0; if (concepto || monto > 0) { ingresosData.push([concepto, monto]); } } }); const wsIngresos = XLSX.utils.aoa_to_sheet(ingresosData); XLSX.utils.book_append_sheet(wb, wsIngresos, "Ingresos"); const expenseCards = view.querySelectorAll('.expense-card'); expenseCards.forEach(card => { const h2 = card.querySelector('h2'); if (!h2) return; const categoryName = h2.textContent.trim(); const expenseData = [["Día", "Concepto", "Monto"]]; const rows = card.querySelectorAll('tbody tr'); rows.forEach(row => { const inputs = row.querySelectorAll('input'); if (inputs.length >= 3) { const dia = inputs[0].value || ""; const concepto = inputs[1].value || ""; const monto = parseFloat(inputs[2].value) || 0; if (dia || concepto || monto > 0) { expenseData.push([dia, concepto, monto]); } } }); if (expenseData.length > 1) { const cleanName = categoryName.replace(/[:\\/\[\]*?]/g, '').substring(0, 30); const ws = XLSX.utils.aoa_to_sheet(expenseData); XLSX.utils.book_append_sheet(wb, ws, cleanName); } }); const monthName = new Date().toLocaleString('es-ES', { month: 'long' }); const year = new Date().getFullYear(); XLSX.writeFile(wb, `Presupuesto_Hogar_${monthName}_${year}.xlsx`); } catch (error) { console.error('Error al exportar:', error); alert('Hubo un error al exportar el archivo. Por favor verifica los datos e intenta nuevamente.'); } });
         calculateAllTotals();
-    })();
+    }
 
     // ===================================================================
     // SCRIPT ORIGINAL DE registroyo ymi negocio.html (AISLADO)
     // ===================================================================
-    (() => {
+    function initNegocioScript() {
         const view = document.getElementById('negocioView');
-        if (!view) return;
         const container = view.querySelector('.container');
         const formatCurrency = (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
         let totalIngresosGlobal = 0, totalCostosGlobal = 0, totalGastosGlobal = 0;
@@ -235,89 +238,7 @@
         view.querySelectorAll('.add-row-btn').forEach(button => { for(let i=0; i<3; i++) button.click(); });
         calculateTotals();
         view.querySelector('#export-btn').addEventListener('click', function() { const wb = XLSX.utils.book_new(); const resumenData = [ ["Concepto", "Monto"], ["Total Ingresos (Ventas)", totalIngresosGlobal], ["Total Costos", totalCostosGlobal], ["Total Gastos", totalGastosGlobal], ["Total Egresos (Costos + Gastos)", totalCostosGlobal + totalGastosGlobal], ["Resultado Mensual", totalIngresosGlobal - (totalCostosGlobal + totalGastosGlobal)] ]; XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumenData), "Estado de Resultados"); const getTableData = (tableId, headers) => { const data = [headers]; view.querySelectorAll(`#${tableId} tbody tr`).forEach(row => { const dia = row.cells[0].querySelector('input').value; const concepto = row.cells[1].querySelector('input').value; const cantidad = parseFloat(row.cells[2].querySelector('input').value) || 0; const precio = parseFloat(row.cells[3].querySelector('input').value) || 0; if (dia || concepto || cantidad > 0 || precio > 0) { data.push([dia, concepto, cantidad, precio, cantidad * precio]); } }); return data; }; const ingresosData = getTableData('ingresos-table', ["Día", "Concepto / Artículo", "Cantidad", "Precio ($)", "Venta Total ($)"]); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ingresosData), "Ingresos (Ventas)"); const costosData = getTableData('costos-table', ["Día", "Concepto / Artículo", "Cantidad", "Precio ($)", "Costo Total ($)"]); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(costosData), "Costos"); const gastosData = getTableData('gastos-table', ["Día", "Concepto / Artículo", "Cantidad", "Precio ($)", "Gasto Total ($)"]); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(gastosData), "Gastos"); const monthName = new Date().toLocaleString('es-ES', { month: 'long' }); const year = new Date().getFullYear(); XLSX.writeFile(wb, `Registro_Negocio_${monthName}_${year}.xlsx`); });
-    })();
-</script>
-<script>
-    // --- Lógica para el Módulo 1 (MEJORADA CON ANALÍTICA) ---
-
-    function calculateOrganizador() {
-        const montos = document.querySelectorAll('.monto-organizador');
-        let total = 0;
-        montos.forEach(input => {
-            total += parseFloat(input.value) || 0;
-        });
-        document.getElementById('total-organizador').innerText = total.toLocaleString('es-CO');
-
-        // ✨ EVENTO DE ANALÍTICA: Notifica que el total fue calculado.
-        if (typeof gtag === 'function') {
-            gtag('event', 'calculate_total', {
-                'event_category': 'organizador_personal',
-                'event_label': 'Calcular Total Compromisos',
-                'value': total
-            });
-        }
     }
-    
-    function addOrganizadorRow() {
-        const tbody = document.getElementById('cuerpo-organizador');
-        const newRow = document.createElement('tr');
-        // ... (el código para crear la fila sigue igual)
-        newRow.innerHTML = `
-            <td><input type="text" class="concepto-organizador" placeholder="Nuevo Concepto"></td>
-            <td><input type="number" class="dia-organizador" min="1" max="31"></td>
-            <td>$<input type="number" class="monto-organizador" placeholder="0"></td>
-            <td>
-                <a title="Añadir a Google Calendar" class="action-icon" onclick="createCalendarLink(this)">📅</a>
-                <a title="Descargar Recordatorio (.ics)" class="action-icon" onclick="downloadICS(this)">💾</a>
-            </td>
-        `;
-        tbody.appendChild(newRow);
-
-        // ✨ EVENTO DE ANALÍTICA: Notifica que se añadió una fila.
-        if (typeof gtag === 'function') {
-            gtag('event', 'add_row', {
-                'event_category': 'organizador_personal',
-                'event_label': 'Añadir Compromiso'
-            });
-        }
-    }
-    
-    function createCalendarLink(element) {
-        // ... (tu lógica para obtener los datos de la fila)
-        const row = element.closest('tr');
-        const concepto = row.querySelector('.concepto-organizador').value;
-        
-        // ✨ EVENTO DE ANALÍTICA: Notifica que se creó un recordatorio de Google.
-        if (typeof gtag === 'function') {
-            gtag('event', 'create_reminder', {
-                'event_category': 'organizador_personal',
-                'event_label': 'Google Calendar',
-                'reminder_concept': concepto
-            });
-        }
-        
-        // ... (el resto de tu función para abrir la URL de Google Calendar)
-    }
-
-    function downloadICS(element) {
-        // ... (tu lógica para obtener los datos de la fila)
-        const row = element.closest('tr');
-        const concepto = row.querySelector('.concepto-organizador').value;
-
-        // ✨ EVENTO DE ANALÍTICA: Notifica que se descargó un .ics.
-        if (typeof gtag === 'function') {
-            gtag('event', 'create_reminder', {
-                'event_category': 'organizador_personal',
-                'event_label': 'ICS Download',
-                'reminder_concept': concepto
-            });
-        }
-        
-        // ... (el resto de tu función para generar y descargar el archivo)
-    }
-    
-    // ... el resto de tus funciones (checkQuiz1, Módulo 2, etc.)
-
 </script>
 </body>
 </html>
