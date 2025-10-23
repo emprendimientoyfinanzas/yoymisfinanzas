@@ -15,7 +15,14 @@
       gtag('js', new Date());
       gtag('config', 'G-XXXXXXXXXX');
     </script>
-    
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1H1XHNQJF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Q1H1XHNQJF');
+</script>
     <style>
         /* --- ESTILOS GENERALES Y DE NAVEGACIÓN --- */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; }
@@ -235,6 +242,87 @@
         view.querySelector('#export-btn').addEventListener('click', function() { const wb = XLSX.utils.book_new(); const resumenData = [ ["Concepto", "Monto"], ["Total Ingresos (Ventas)", totalIngresosGlobal], ["Total Costos", totalCostosGlobal], ["Total Gastos", totalGastosGlobal], ["Total Egresos (Costos + Gastos)", totalCostosGlobal + totalGastosGlobal], ["Resultado Mensual", totalIngresosGlobal - (totalCostosGlobal + totalGastosGlobal)] ]; XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumenData), "Estado de Resultados"); const getTableData = (tableId, headers) => { const data = [headers]; view.querySelectorAll(`#${tableId} tbody tr`).forEach(row => { const dia = row.cells[0].querySelector('input').value; const concepto = row.cells[1].querySelector('input').value; const cantidad = parseFloat(row.cells[2].querySelector('input').value) || 0; const precio = parseFloat(row.cells[3].querySelector('input').value) || 0; if (dia || concepto || cantidad > 0 || precio > 0) { data.push([dia, concepto, cantidad, precio, cantidad * precio]); } }); return data; }; const ingresosData = getTableData('ingresos-table', ["Día", "Concepto / Artículo", "Cantidad", "Precio ($)", "Venta Total ($)"]); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(ingresosData), "Ingresos (Ventas)"); const costosData = getTableData('costos-table', ["Día", "Concepto / Artículo", "Cantidad", "Precio ($)", "Costo Total ($)"]); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(costosData), "Costos"); const gastosData = getTableData('gastos-table', ["Día", "Concepto / Artículo", "Cantidad", "Precio ($)", "Gasto Total ($)"]); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(gastosData), "Gastos"); const monthName = new Date().toLocaleString('es-ES', { month: 'long' }); const year = new Date().getFullYear(); XLSX.writeFile(wb, `Registro_Negocio_${monthName}_${year}.xlsx`); });
     })();
 </script>
+<script>
+    // --- Lógica para el Módulo 1 (MEJORADA CON ANALÍTICA) ---
 
+    function calculateOrganizador() {
+        const montos = document.querySelectorAll('.monto-organizador');
+        let total = 0;
+        montos.forEach(input => {
+            total += parseFloat(input.value) || 0;
+        });
+        document.getElementById('total-organizador').innerText = total.toLocaleString('es-CO');
+
+        // ✨ EVENTO DE ANALÍTICA: Notifica que el total fue calculado.
+        if (typeof gtag === 'function') {
+            gtag('event', 'calculate_total', {
+                'event_category': 'organizador_personal',
+                'event_label': 'Calcular Total Compromisos',
+                'value': total
+            });
+        }
+    }
+    
+    function addOrganizadorRow() {
+        const tbody = document.getElementById('cuerpo-organizador');
+        const newRow = document.createElement('tr');
+        // ... (el código para crear la fila sigue igual)
+        newRow.innerHTML = `
+            <td><input type="text" class="concepto-organizador" placeholder="Nuevo Concepto"></td>
+            <td><input type="number" class="dia-organizador" min="1" max="31"></td>
+            <td>$<input type="number" class="monto-organizador" placeholder="0"></td>
+            <td>
+                <a title="Añadir a Google Calendar" class="action-icon" onclick="createCalendarLink(this)">📅</a>
+                <a title="Descargar Recordatorio (.ics)" class="action-icon" onclick="downloadICS(this)">💾</a>
+            </td>
+        `;
+        tbody.appendChild(newRow);
+
+        // ✨ EVENTO DE ANALÍTICA: Notifica que se añadió una fila.
+        if (typeof gtag === 'function') {
+            gtag('event', 'add_row', {
+                'event_category': 'organizador_personal',
+                'event_label': 'Añadir Compromiso'
+            });
+        }
+    }
+    
+    function createCalendarLink(element) {
+        // ... (tu lógica para obtener los datos de la fila)
+        const row = element.closest('tr');
+        const concepto = row.querySelector('.concepto-organizador').value;
+        
+        // ✨ EVENTO DE ANALÍTICA: Notifica que se creó un recordatorio de Google.
+        if (typeof gtag === 'function') {
+            gtag('event', 'create_reminder', {
+                'event_category': 'organizador_personal',
+                'event_label': 'Google Calendar',
+                'reminder_concept': concepto
+            });
+        }
+        
+        // ... (el resto de tu función para abrir la URL de Google Calendar)
+    }
+
+    function downloadICS(element) {
+        // ... (tu lógica para obtener los datos de la fila)
+        const row = element.closest('tr');
+        const concepto = row.querySelector('.concepto-organizador').value;
+
+        // ✨ EVENTO DE ANALÍTICA: Notifica que se descargó un .ics.
+        if (typeof gtag === 'function') {
+            gtag('event', 'create_reminder', {
+                'event_category': 'organizador_personal',
+                'event_label': 'ICS Download',
+                'reminder_concept': concepto
+            });
+        }
+        
+        // ... (el resto de tu función para generar y descargar el archivo)
+    }
+    
+    // ... el resto de tus funciones (checkQuiz1, Módulo 2, etc.)
+
+</script>
 </body>
 </html>
