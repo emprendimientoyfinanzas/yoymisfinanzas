@@ -181,129 +181,29 @@
     }
     document.addEventListener('DOMContentLoaded', () => { showView('capacitacionView'); });
 
-    // ===================================================================
-    // SCRIPT ORIGINAL DE yoymisfinanzas.html (AISLADO)
-    // ===================================================================
 // ===================================================================
 // SCRIPT CORREGIDO PARA yoymisfinanzas.html (AISLADO Y FUNCIONAL)
 // ===================================================================
-(() => {
-    const view = document.getElementById('capacitacionView');
-    if (!view) return; // Si la vista no existe, no hacer nada.
-
-    const formatCurrency = (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
-    const totalHogarCell = view.querySelector('#total-hogar');
-
-    // --- Funciones que los botones (onclick) necesitan ---
-    // Las asignamos al objeto 'window' para hacerlas globales y accesibles desde el HTML.
-
-    window.calculateOrganizador = function() {
-        const montos = view.querySelectorAll('#cuerpo-organizador .monto-organizador');
-        let total = 0;
-        montos.forEach(input => { total += parseFloat(input.value) || 0; });
-        totalHogarCell.textContent = formatCurrency(total);
-        if (typeof gtag === 'function') { gtag('event', 'calculate_total', { 'event_category': 'organizador_personal', 'value': total }); }
-    };
-
-    window.addOrganizadorRow = function() {
-        const tbody = view.querySelector('#cuerpo-organizador');
-        const newRow = document.createElement('tr');
-        newRow.innerHTML = `<td><input type="text" class="concepto-organizador" placeholder="Nuevo Concepto"></td><td><input type="number" class="dia-organizador" min="1" max="31"></td><td><input type="number" class="monto-organizador" placeholder="0" oninput="calculateOrganizador()"></td><td><a title="Añadir a Google Calendar" class="action-icon" onclick="createCalendarLink(this)">📅</a><a title="Descargar Recordatorio (.ics)" class="action-icon" onclick="downloadICS(this)">💾</a></td>`;
-        tbody.appendChild(newRow);
-        window.calculateOrganizador(); // Llamada a la función global
-        if (typeof gtag === 'function') { gtag('event', 'add_row', { 'event_category': 'organizador_personal' }); }
-    };
-    
-    // Funciones auxiliares que se mantienen privadas dentro de este scope
-    const getNextEventDate = (diaLimite) => { const hoy = new Date(); let anioEvento = hoy.getFullYear(); let mesEvento = hoy.getMonth(); let diasEnMes = new Date(anioEvento, mesEvento + 1, 0).getDate(); let diaValido = Math.min(diaLimite, diasEnMes); if (hoy.getDate() > diaValido) { mesEvento += 1; if (mesEvento > 11) { mesEvento = 0; anioEvento += 1; } } return new Date(anioEvento, mesEvento, diaValido); };
-    const formatDateForCalendar = (date) => { const anio = date.getFullYear(); const mes = String(date.getMonth() + 1).padStart(2, '0'); const dia = String(date.getDate()).padStart(2, '0'); return `${anio}${mes}${dia}`; };
-
-    window.createCalendarLink = function(element) {
-        const row = element.closest('tr');
-        const concepto = row.querySelector('.concepto-organizador').value || 'Pago';
-        const dia = parseInt(row.querySelector('.dia-organizador').value);
-        const monto = parseFloat(row.querySelector('.monto-organizador').value) || 0;
-        if (!concepto || isNaN(dia) || dia < 1 || dia > 31) { alert('Por favor, complete un concepto válido y un día límite (1-31) para crear un recordatorio.'); return; }
-        const eventDate = getNextEventDate(dia);
-        const formattedDate = formatDateForCalendar(eventDate);
-        const eventTitle = encodeURIComponent(`Recordatorio de Pago: ${concepto}`);
-        const eventDetails = encodeURIComponent(`No olvides realizar el pago de "${concepto}" por un monto aproximado de ${formatCurrency(monto)}.`);
-        const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&dates=${formattedDate}/${formattedDate}&details=${eventDetails}&allDay=true`;
-        window.open(googleCalendarUrl, '_blank');
-        if (typeof gtag === 'function') { gtag('event', 'create_reminder', { 'event_category': 'organizador_personal', 'event_label': 'Google Calendar', 'reminder_concept': concepto }); }
-    };
-
-    window.downloadICS = function(element) {
-        const row = element.closest('tr');
-        const concepto = row.querySelector('.concepto-organizador').value || 'Pago';
-        const dia = parseInt(row.querySelector('.dia-organizador').value);
-        const monto = parseFloat(row.querySelector('.monto-organizador').value) || 0;
-        if (!concepto || isNaN(dia) || dia < 1 || dia > 31) { alert('Por favor, complete un concepto válido y un día límite (1-31) para crear un recordatorio.'); return; }
-        const eventDate = getNextEventDate(dia);
-        const formattedDate = formatDateForCalendar(eventDate);
-        const icsContent = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT', `DTSTART;VALUE=DATE:${formattedDate}`, `DTEND;VALUE=DATE:${formattedDate}`, `SUMMARY:Recordatorio de Pago: ${concepto}`, `DESCRIPTION:No olvides realizar el pago de "${concepto}" por un monto aproximado de ${formatCurrency(monto)}.`, 'END:VEVENT', 'END:VCALENDAR'].join('\n');
-        const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `recordatorio_${concepto.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}.ics`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href);
-        if (typeof gtag === 'function') { gtag('event', 'create_reminder', { 'event_category': 'organizador_personal', 'event_label': 'ICS Download', 'reminder_concept': concepto }); }
-    };
-    
-    // --- Lógica que no necesita ser global ---
-    const negocioTableBody = view.querySelector('#negocio-table tbody');
-    const resultadoAnualCell = view.querySelector('#resultado-anual');
-    const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-    meses.forEach(mes => {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${mes}</td><td><input type="number" class="negocio-input" data-mes="${mes}" data-tipo="ingresos" placeholder="0"></td><td><input type="number" class="negocio-input" data-mes="${mes}" data-tipo="costos" placeholder="0"></td><td><input type="number" class="negocio-input" data-mes="${mes}" data-tipo="gastos" placeholder="0"></td><td id="egresos-${mes}">$ 0</td><td id="resultado-${mes}">$ 0</td>`;
-        negocioTableBody.appendChild(row);
-    });
-
-    function updateNegocioTable() {
-        let totalAnual = 0;
-        meses.forEach(mes => {
-            const ingresos = parseFloat(view.querySelector(`[data-mes="${mes}"][data-tipo="ingresos"]`).value) || 0;
-            const costos = parseFloat(view.querySelector(`[data-mes="${mes}"][data-tipo="costos"]`).value) || 0;
-            const gastos = parseFloat(view.querySelector(`[data-mes="${mes}"][data-tipo="gastos"]`).value) || 0;
-            const egresosTotales = costos + gastos;
-            const resultadoMensual = ingresos - egresosTotales;
-            totalAnual += resultadoMensual;
-            view.querySelector(`#egresos-${mes}`).textContent = formatCurrency(egresosTotales);
-            const resultadoCell = view.querySelector(`#resultado-${mes}`);
-            resultadoCell.textContent = formatCurrency(resultadoMensual);
-            resultadoCell.style.color = resultadoMensual < 0 ? '#dc3545' : '#28a745';
-        });
-        resultadoAnualCell.textContent = formatCurrency(totalAnual);
-        resultadoAnualCell.style.color = totalAnual < 0 ? '#dc3545' : '#28a745';
-    }
-    view.querySelectorAll('.negocio-input').forEach(input => { input.addEventListener('input', updateNegocioTable); });
-    
-    const quizAnswers = { 'q1-1': 'b', 'q1-2': 'b', 'q1-3': 'b', 'q1-4': 'b', 'q2-1': 'b', 'q2-2': 'a', 'q2-3': 'b', 'q2-4': 'b' };
-    view.querySelectorAll('.quiz-question').forEach(questionDiv => {
-        const questionId = questionDiv.id;
-        const radios = questionDiv.querySelectorAll(`input[name="${questionId}"]`);
-        const feedbackSpan = questionDiv.querySelector('.quiz-feedback');
-        radios.forEach(radio => {
-            radio.addEventListener('change', () => {
-                if (radio.value === quizAnswers[questionId]) {
-                    feedbackSpan.textContent = '¡Correcto!';
-                    feedbackSpan.className = 'quiz-feedback feedback-correct';
-                } else {
-                    feedbackSpan.textContent = 'Incorrecto. ¡Intenta de nuevo!';
-                    feedbackSpan.className = 'quiz-feedback feedback-incorrect';
-                }
-            });
-        });
-    });
-    
-    // Inicializar al cargar la página
-    window.calculateOrganizador();
-    updateNegocioTable();
-})();
+    (() => {
+        const view = document.getElementById('capacitacionView');
+        const formatCurrency = (value) => new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0 }).format(value);
+        const totalHogarCell = view.querySelector('#total-hogar');
+        
+        // CORRECCIÓN: Funciones asignadas a window para ser accesibles desde onclick
+        window.calculateOrganizador = function() { const montos = view.querySelectorAll('#cuerpo-organizador .monto-organizador'); let total = 0; montos.forEach(input => { total += parseFloat(input.value) || 0; }); totalHogarCell.textContent = formatCurrency(total); if (typeof gtag === 'function') { gtag('event', 'calculate_total', { 'event_category': 'organizador_personal', 'value': total }); } };
+        window.addOrganizadorRow = function() { const tbody = view.querySelector('#cuerpo-organizador'); const newRow = document.createElement('tr'); newRow.innerHTML = `<td><input type="text" class="concepto-organizador" placeholder="Nuevo Concepto"></td><td><input type="number" class="dia-organizador" min="1" max="31"></td><td><input type="number" class="monto-organizador" placeholder="0" oninput="calculateOrganizador()"></td><td><a title="Añadir a Google Calendar" class="action-icon" onclick="createCalendarLink(this)">📅</a><a title="Descargar Recordatorio (.ics)" class="action-icon" onclick="downloadICS(this)">💾</a></td>`; tbody.appendChild(newRow); calculateOrganizador(); if (typeof gtag === 'function') { gtag('event', 'add_row', { 'event_category': 'organizador_personal' }); } };
+        window.createCalendarLink = function(element) { const row = element.closest('tr'); const concepto = row.querySelector('.concepto-organizador').value || 'Pago'; const dia = parseInt(row.querySelector('.dia-organizador').value); const monto = parseFloat(row.querySelector('.monto-organizador').value) || 0; if (!concepto || isNaN(dia) || dia < 1 || dia > 31) { alert('Por favor, complete un concepto válido y un día límite (1-31) para crear un recordatorio.'); return; } const getNextEventDate = (diaLimite) => { const hoy = new Date(); let anioEvento = hoy.getFullYear(); let mesEvento = hoy.getMonth(); let diasEnMes = new Date(anioEvento, mesEvento + 1, 0).getDate(); let diaValido = Math.min(diaLimite, diasEnMes); if (hoy.getDate() > diaValido) { mesEvento += 1; if (mesEvento > 11) { mesEvento = 0; anioEvento += 1; } } return new Date(anioEvento, mesEvento, diaValido); }; const formatDateForCalendar = (date) => { const anio = date.getFullYear(); const mes = String(date.getMonth() + 1).padStart(2, '0'); const dia = String(date.getDate()).padStart(2, '0'); return `${anio}${mes}${dia}`; }; const eventDate = getNextEventDate(dia); const formattedDate = formatDateForCalendar(eventDate); const eventTitle = encodeURIComponent(`Recordatorio de Pago: ${concepto}`); const eventDetails = encodeURIComponent(`No olvides realizar el pago de "${concepto}" por un monto aproximado de $${monto.toLocaleString('es-CO')}.`); const googleCalendarUrl = `https://www.google.com/calendar/render?action=TEMPLATE&text=${eventTitle}&dates=${formattedDate}/${formattedDate}&details=${eventDetails}&allDay=true`; window.open(googleCalendarUrl, '_blank'); if (typeof gtag === 'function') { gtag('event', 'create_reminder', { 'event_category': 'organizador_personal', 'event_label': 'Google Calendar', 'reminder_concept': concepto }); } };
+        window.downloadICS = function(element) { const row = element.closest('tr'); const concepto = row.querySelector('.concepto-organizador').value || 'Pago'; const dia = parseInt(row.querySelector('.dia-organizador').value); const monto = parseFloat(row.querySelector('.monto-organizador').value) || 0; if (!concepto || isNaN(dia) || dia < 1 || dia > 31) { alert('Por favor, complete un concepto válido y un día límite (1-31) para crear un recordatorio.'); return; } const getNextEventDate = (diaLimite) => { const hoy = new Date(); let anioEvento = hoy.getFullYear(); let mesEvento = hoy.getMonth(); let diasEnMes = new Date(anioEvento, mesEvento + 1, 0).getDate(); let diaValido = Math.min(diaLimite, diasEnMes); if (hoy.getDate() > diaValido) { mesEvento += 1; if (mesEvento > 11) { mesEvento = 0; anioEvento += 1; } } return new Date(anioEvento, mesEvento, diaValido); }; const formatDateForCalendar = (date) => { const anio = date.getFullYear(); const mes = String(date.getMonth() + 1).padStart(2, '0'); const dia = String(date.getDate()).padStart(2, '0'); return `${anio}${mes}${dia}`; }; const eventDate = getNextEventDate(dia); const formattedDate = formatDateForCalendar(eventDate); const icsContent = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT', `DTSTART;VALUE=DATE:${formattedDate}`, `DTEND;VALUE=DATE:${formattedDate}`, `SUMMARY:Recordatorio de Pago: ${concepto}`, `DESCRIPTION:No olvides realizar el pago de "${concepto}" por un monto aproximado de $${monto.toLocaleString('es-CO')}.`, 'END:VEVENT', 'END:VCALENDAR'].join('\n'); const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' }); const link = document.createElement('a'); link.href = URL.createObjectURL(blob); link.download = `recordatorio_${concepto.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}.ics`; document.body.appendChild(link); link.click(); document.body.removeChild(link); URL.revokeObjectURL(link.href); if (typeof gtag === 'function') { gtag('event', 'create_reminder', { 'event_category': 'organizador_personal', 'event_label': 'ICS Download', 'reminder_concept': concepto }); } };
+        
+        const negocioTableBody = view.querySelector('#negocio-table tbody'); const resultadoAnualCell = view.querySelector('#resultado-anual'); const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        meses.forEach(mes => { const row = document.createElement('tr'); row.innerHTML = `<td>${mes}</td><td><input type="number" class="negocio-input" data-mes="${mes}" data-tipo="ingresos" placeholder="0"></td><td><input type="number" class="negocio-input" data-mes="${mes}" data-tipo="costos" placeholder="0"></td><td><input type="number" class="negocio-input" data-mes="${mes}" data-tipo="gastos" placeholder="0"></td><td id="egresos-${mes}">$ 0</td><td id="resultado-${mes}">$ 0</td>`; negocioTableBody.appendChild(row); });
+        function updateNegocioTable() { let totalAnual = 0; meses.forEach(mes => { const ingresos = parseFloat(view.querySelector(`[data-mes="${mes}"][data-tipo="ingresos"]`).value) || 0; const costos = parseFloat(view.querySelector(`[data-mes="${mes}"][data-tipo="costos"]`).value) || 0; const gastos = parseFloat(view.querySelector(`[data-mes="${mes}"][data-tipo="gastos"]`).value) || 0; const egresosTotales = costos + gastos; const resultadoMensual = ingresos - egresosTotales; totalAnual += resultadoMensual; view.querySelector(`#egresos-${mes}`).textContent = formatCurrency(egresosTotales); const resultadoCell = view.querySelector(`#resultado-${mes}`); resultadoCell.textContent = formatCurrency(resultadoMensual); resultadoCell.style.color = resultadoMensual < 0 ? '#dc3545' : '#28a745'; }); resultadoAnualCell.textContent = formatCurrency(totalAnual); resultadoAnualCell.style.color = totalAnual < 0 ? '#dc3545' : '#28a745'; }
+        view.querySelectorAll('.negocio-input').forEach(input => { input.addEventListener('input', updateNegocioTable); });
+        
+        const quizAnswers = { 'q1-1': 'b', 'q1-2': 'b', 'q1-3': 'b', 'q1-4': 'b', 'q2-1': 'b', 'q2-2': 'a', 'q2-3': 'b', 'q2-4': 'b' }; view.querySelectorAll('.quiz-question').forEach(questionDiv => { const questionId = questionDiv.id; const radios = questionDiv.querySelectorAll(`input[name="${questionId}"]`); const feedbackSpan = questionDiv.querySelector('.quiz-feedback'); radios.forEach(radio => { radio.addEventListener('change', () => { if (radio.value === quizAnswers[questionId]) { feedbackSpan.textContent = '¡Correcto!'; feedbackSpan.className = 'quiz-feedback feedback-correct'; } else { feedbackSpan.textContent = 'Incorrecto. ¡Intenta de nuevo!'; feedbackSpan.className = 'quiz-feedback feedback-incorrect'; } }); }); });
+        
+        calculateOrganizador(); updateNegocioTable();
+    })();
 
     // ===================================================================
     // SCRIPT ORIGINAL DE Registro mi hogar y mi negocio.html (AISLADO)
